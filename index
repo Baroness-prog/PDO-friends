@@ -1,0 +1,60 @@
+<?php
+
+require_once '_connect.php';
+
+
+$pdo = new \PDO(DSN,
+    USER,
+    PASS);
+
+$lastName = trim($_POST['lastname']); // get the data from a form
+
+$firstName = trim($_POST['firstname']);
+
+$query = 'INSERT INTO friend (firstname, lastname) values (:firstname, :lastname )';
+$statement = $pdo->prepare($query);
+
+$statement->bindValue(':lastname', $lastName);
+
+$statement->bindValue(':firstname', $firstName);
+
+$statement->execute();
+
+$query = "SELECT * FROM friend";
+
+$statement = $pdo->query($query);
+
+$friends = $statement->fetchAll(PDO::FETCH_BOTH); // same as $statement->fetchAll()
+foreach($friends as $friend) {
+
+    echo '<ul>' . $friend['firstname'] . '  ' . $friend['lastname'] . ' - '.'<br>' . '</ul>';
+
+}
+
+?>
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>base_fiends</title>
+</head>
+<body>
+
+<div>
+
+    <form action="index.php"method="post">
+        <div>
+            <label for="firstName"> firstname</label>
+            <input type="text" id="firstname" name="firstname">
+        </div>
+        <div>
+            <label for="lastName">Lastname</label>
+            <input type="text" id="lastname" name="lastname">
+        </div>
+        <input type="submit">
+    </form>
+</div>
+</body>
+</html>
